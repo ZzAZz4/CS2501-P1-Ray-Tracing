@@ -1,8 +1,9 @@
-#include "RayTracingApp.h"
+#include "scenes/FirefliesApp.h"
 
 
 int main () {
-    RayTracingApp app;
+    srand(time(nullptr));
+    FirefliesApp app;
     if (app.Construct(600, 600, 1, 1)) {
         app.Start();
     }
