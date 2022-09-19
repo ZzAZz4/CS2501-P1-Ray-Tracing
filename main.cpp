@@ -4,7 +4,7 @@
 int main () {
     srand(time(nullptr));
     FirefliesApp app;
-    if (app.Construct(600, 600, 1, 1)) {
+    if (app.Construct(500, 500, 1, 1)) {
         app.Start();
     }
     return 0;

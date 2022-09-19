@@ -11,11 +11,6 @@ namespace Math {
     static float randf(float min, float max) {
         return min + (max - min) * static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
-
-    static int randi(int min, int max) {
-        return min + rand() % (max - min);
-    }
-
 };
 
 #include <iostream>

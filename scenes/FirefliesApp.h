@@ -2,8 +2,8 @@
 // Created by Esteban on 8/19/2022.
 //
 
-#ifndef UNTITLED26_FIREFLIESAPP_H
-#define UNTITLED26_FIREFLIESAPP_H
+#ifndef UNTITLED26_FIREFLIES_APP_H
+#define UNTITLED26_FIREFLIES_APP_H
 
 #include <scene/Camera.h>
 #include <scene/Scene.h>
@@ -35,4 +35,4 @@ private:
 };
 
 
-#endif //UNTITLED26_FIREFLIESAPP_H
+#endif //UNTITLED26_FIREFLIES_APP_H

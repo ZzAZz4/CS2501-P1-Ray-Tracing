@@ -17,8 +17,6 @@ struct Scene {
     using Objects = std::vector<std::unique_ptr<Shape>>;
     using IncidentLights = std::vector<std::unique_ptr<IncidentLight>>;
 
-    constexpr static Math::vec3 up{ 0, -1, 0 };
-
     Objects objects;
     IncidentLights incident_lights;
     AmbientLight ambient_light;

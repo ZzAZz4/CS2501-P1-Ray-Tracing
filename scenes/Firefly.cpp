@@ -31,9 +31,10 @@ void Firefly::steer (float fElapsedTime) {
 
     if (distance < max_speed * fElapsedTime) {
         destination = initial_position + random_in_radius(random_radius);
-        if (distance >= random_radius) {
-            position = destination;
-            velocity = -velocity;
-        }
+    }
+    if (distance >= random_radius) {
+        position = destination;
+        velocity = -velocity;
+        destination = initial_position + random_in_radius(random_radius);
     }
 }

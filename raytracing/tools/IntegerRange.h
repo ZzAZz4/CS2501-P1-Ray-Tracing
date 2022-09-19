@@ -95,7 +95,6 @@ private:
 
 public:
     constexpr IntegerRange(int start, int last) : start(start), last(last) {}
-    constexpr IntegerRange(int start, int last, int step) : start(start), last(last), step(step) {}
     [[nodiscard]] constexpr auto begin() const -> IntegerIterator {
         return {start, step};
     }
@@ -103,10 +102,10 @@ public:
         return {last, step};
     }
     [[nodiscard]] constexpr auto cbegin() const -> IntegerIterator {
-        return {start, step};
+        return begin();
     }
     [[nodiscard]] constexpr auto cend() const -> IntegerIterator {
-        return {last, step};
+        return end();
     }
     [[nodiscard]] constexpr auto size() const -> int {
         return (last - start) / step + 1;

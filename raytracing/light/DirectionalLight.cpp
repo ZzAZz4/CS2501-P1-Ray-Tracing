@@ -1,6 +1,6 @@
 #include <light/DirectionalLight.h>
 
-DirectionalLight::DirectionalLight (const Math::vec3& direction, const Math::vec3& intensity_value)
+[[maybe_unused]] DirectionalLight::DirectionalLight (const Math::vec3& direction, const Math::vec3& intensity_value)
     : IncidentLight(intensity_value), direction(Math::normalize(direction)) {}
 
 

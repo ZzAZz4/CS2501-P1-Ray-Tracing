@@ -1,12 +1,12 @@
 
 #define OLC_PGE_APPLICATION
+
 #include <olcPixelGameEngine.h>
 
 #include "FirefliesApp.h"
 #include <object/Sphere.h>
 #include <object/Cylinder.h>
 #include <object/Plane.h>
-
 
 
 FirefliesApp::FirefliesApp ()
@@ -33,7 +33,8 @@ bool FirefliesApp::OnUserCreate () {
     const auto yellow_luminal = Material{ .emission={ 0.9f, 1.f, 0.6f }};
     const auto glass = Material{ .color={ 0.f, 0.f, 0.f }, .index_of_refraction=1.5f, .transmittance=0.9f };
 
-    scene.create_object<Cylinder>(Math::vec3{ 0, 0, -2 }, Math::vec3{ 0, 0.5, -2 }, -0.5, mate_white)->light = mid_light;
+    scene.create_object<Cylinder>(Math::vec3{ 0, 0, -2 }, Math::vec3{ 0, 0.5, -2 }, -0.5, mate_white)
+         ->light = mid_light;
     scene.create_object<Cylinder>(Math::vec3{ 0.f, 0.f, -4.f }, Math::vec3{ 0.f, 2.f, -4.f }, 1.f, glass);
     scene.create_object<Cylinder>(Math::vec3{ 0.f, 0.05f, -4.f }, Math::vec3{ 0.f, 1.95f, -4.f }, -0.95f, glass);
     scene.create_object<Sphere>(Math::vec3{ -2.f, 0.7f, -2.f }, 0.72f, shiny_green);
@@ -64,7 +65,7 @@ void FirefliesApp::render_scene () {
 
     std::for_each(
         std::execution::par_unseq,
-        std::cbegin(range), std::cend(range), [&] (auto index) {
+        range.cbegin(), range.cend(), [&] (auto index) {
             const auto x = index % ScreenWidth();
             const auto y = index / ScreenWidth();
 
@@ -86,7 +87,14 @@ void FirefliesApp::update (float fElapsedTime [[maybe_unused]]) {
     if (GetKey(olc::Key::D).bHeld) camera.move_right(-speed * fElapsedTime);
     if (GetKey(olc::Key::SPACE).bHeld) camera.move_up(speed * fElapsedTime);
     if (GetKey(olc::Key::SHIFT).bHeld) camera.move_up(-speed * fElapsedTime);
+    if (GetKey(olc::Key::UP).bHeld) camera.rotate_up(speed * fElapsedTime);
+    if (GetKey(olc::Key::DOWN).bHeld) camera.rotate_up(-speed * fElapsedTime);
+    if (GetKey(olc::Key::LEFT).bHeld) camera.rotate_right(speed * fElapsedTime);
+    if (GetKey(olc::Key::RIGHT).bHeld) camera.rotate_right(-speed * fElapsedTime);
 
-    for (auto firefly : fireflies) firefly->update(fElapsedTime);
+    for (auto firefly: fireflies) {
+        firefly->update(fElapsedTime);
+    }
+
     ticks += fElapsedTime;
 }

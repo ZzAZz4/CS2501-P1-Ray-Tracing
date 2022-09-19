@@ -2,34 +2,31 @@
 
 
 Intersection Cylinder::intersection (const Ray& ray, float min_time, float) const {
-    Math::vec3 ro = ray.origin;
-    Math::vec3 rd = ray.direction;
-    Math::vec3 ca = this->base - this->top;
-    Math::vec3 oc = ro - this->top;
+    const auto ca = this->base - this->top;
+    const auto oc = ray.origin - this->top;
 
-    float caca = Math::dot(ca, ca);
-    float card = Math::dot(ca, rd);
-    float caoc = Math::dot(ca, oc);
-    float a = caca - card * card;
-    float b = caca * Math::dot(oc, rd) - caoc * card;
-    float c = caca * Math::dot(oc, oc) - caoc * caoc - this->radius * this->radius * caca;
-    float h = b * b - a * c;
+    const float ca_dot_ca = Math::dot(ca, ca);
+    const float ca_dot_rd = Math::dot(ca, ray.direction);
+    const float ca_dot_oc = Math::dot(ca, oc);
+    const float a = ca_dot_ca - ca_dot_rd * ca_dot_rd;
+    const float b = ca_dot_ca * Math::dot(oc, ray.direction) - ca_dot_oc * ca_dot_rd;
+    const float c = ca_dot_ca * Math::dot(oc, oc) - ca_dot_oc * ca_dot_oc - this->radius * this->radius * ca_dot_ca;
+    const float h_sq = b * b - a * c;
 
-    if (h < 0.0) {
+    if (h_sq < 0.0) {
         return {};
     }
-    h = Math::sqrt(h);
+    const auto h = Math::sqrt(h_sq);
 
-    float t = (-b - h) / a;
-
-    float y = caoc + t * card;
-    if (y > 0.0 && y < caca && t > min_time) {
-        return Intersection::normalized(t, (oc + t*rd - ca * y / caca) * Math::sign(radius), this);
+    const float t = (-b - h) / a;
+    const float y = ca_dot_oc + t * ca_dot_rd;
+    if (y > 0.0 && y < ca_dot_ca && t > min_time) {
+        return Intersection::normalized(t, (oc + t * ray.direction - ca * y / ca_dot_ca) * Math::sign(radius), this);
     }
     // caps
-    t = (((y < 0.f) ? 0.f : caca) - caoc) / card;
-    if (t <= min_time || Math::abs(b + a * t) >= h) {
+    const auto t2 = (((y < 0.f) ? 0.f : ca_dot_ca) - ca_dot_oc) / ca_dot_rd;
+    if (t2 <= min_time || Math::abs(b + a * t2) >= h) {
         return {};
     }
-    return Intersection::normalized(t, ca * Math::sign(y * radius), this);
+    return Intersection::normalized(t2, ca * Math::sign(y * radius), this);
 }
