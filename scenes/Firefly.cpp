@@ -18,15 +18,11 @@ void Firefly::update (float fElapsedTime) {
 }
 
 void Firefly::steer (float fElapsedTime) {
-    auto desired_velocity = destination - position;
-    auto distance = Math::length(desired_velocity);
+    const auto desired_velocity = destination - position;
+    const auto distance = Math::length(desired_velocity);
 
-    auto steering = Math::normalize(desired_velocity) * max_speed - velocity;
-    steering = Math::normalize(steering) * Math::min(max_acceleration, Math::length(steering));
-
-    velocity += steering * fElapsedTime;
-    velocity = Math::normalize(velocity) * Math::min(max_speed, Math::length(velocity));
-
+    auto steering = Math::cap_length(Math::normalize(desired_velocity) * max_speed - velocity, max_acceleration);
+    velocity = Math::cap_length(velocity + steering * fElapsedTime, max_speed);
     position += velocity * fElapsedTime;
 
     if (distance < max_speed * fElapsedTime) {
