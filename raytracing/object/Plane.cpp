@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/25/2022.
-//
-
 #include <object/Plane.h>
 #include <object/Ray.h>
 

@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/17/2022.
-//
-
 #ifndef UNTITLED26_CAMERA_H
 #define UNTITLED26_CAMERA_H
 
@@ -12,7 +8,7 @@ struct Scene;
 
 struct Camera {
     Math::mat3x3 basis;
-    Math::vec3 lower_left;
+//    Math::vec3 lower_left;
     Math::vec3 position;
 
     Camera() = default;
@@ -21,15 +17,12 @@ struct Camera {
 
     void move_forward(float distance) {
         position += distance * -basis[2];
-        lower_left += distance * -basis[2];
     }
     void move_right(float distance) {
         position += distance * -basis[0];
-        lower_left += distance * -basis[0];
     }
     void move_up(float distance) {
         position += distance * -basis[1];
-        lower_left += distance * -basis[1];
     }
 
     [[nodiscard]] auto pixel_color (const Scene& scene, float x, float y, int bounces, int samples = 1) const -> Math::vec3;

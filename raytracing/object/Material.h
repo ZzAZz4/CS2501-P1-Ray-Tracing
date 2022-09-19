@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/25/2022.
-//
-
 #ifndef UNTITLED26_MATERIAL_H
 #define UNTITLED26_MATERIAL_H
 

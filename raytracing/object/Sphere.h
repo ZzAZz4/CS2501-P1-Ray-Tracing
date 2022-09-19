@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/17/2022.
-//
-
 #ifndef UNTITLED26_SPHERE_H
 #define UNTITLED26_SPHERE_H
 
@@ -16,7 +12,6 @@ struct Sphere : Shape {
         : Shape(material_), position(position_), radius(radius_) {}
 
     [[nodiscard]] Intersection intersection (const Ray& ray, float min_time, float max_time) const override;
-//    [[nodiscard]] auto normal (const Math::vec3& point) const -> Math::vec3 override;
 };
 
 

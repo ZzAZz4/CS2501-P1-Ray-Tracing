@@ -7,9 +7,9 @@
 #include <object/Ray.h>
 
 auto Camera::pixel_color (const Scene& scene, float x, float y, int bounces, int samples [[maybe_unused]]) const -> Math::vec3 {
-    const auto viewport_point = lower_left + basis * Math::vec3(x, y, 0);
+    const auto viewport_point = this->position + this->basis * Math::vec3(x - 0.5, y - 0.5, -1.0);
     const auto ray = Ray::between(position, viewport_point);
-    const auto color = ray.trace(scene, 1.0f, Math::infinity, bounces);
+    const auto color = Scene::trace(ray, scene, 1.0f, Math::infinity, bounces);
     const auto gc_color = Math::sqrt(color);
     return Math::clamp(gc_color, 0.f, 1.f);
 }
@@ -27,7 +27,6 @@ auto calculate_basis (const Math::vec3& dir, const Math::vec3& up, float dist, f
 
 Camera::Camera (const Math::vec3& pos_, const Math::vec3& dir_, float v_fov_, float aspect_, float dist_)
     : basis(calculate_basis(dir_, Scene::up, dist_, v_fov_, aspect_)),
-      lower_left(pos_ + basis * Math::vec3(-0.5, -0.5, -1.0)),
       position(pos_) {
 }
 

@@ -13,7 +13,11 @@ struct Intersection {
     }
 
     Intersection (float time, const Math::vec3& normal, const Shape* shape) noexcept
-        : out_normal(Math::normalize(normal)), time(time), object(shape) {
+        : out_normal(normal), time(time), object(shape) {
+    }
+
+    static Intersection normalized(float time, const Math::vec3& normal, const Shape* shape) noexcept {
+        return Intersection(time, Math::normalize(normal), shape);
     }
 
     bool operator < (const Intersection& other) const noexcept {

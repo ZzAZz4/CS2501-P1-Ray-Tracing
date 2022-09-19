@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/17/2022.
-//
-
 #ifndef UNTITLED26_SCENE_H
 #define UNTITLED26_SCENE_H
 
@@ -42,23 +38,27 @@ struct Scene {
 
     template<typename T>
     auto create_light (auto&& ... args);
+
+    [[nodiscard]]
+    static auto trace (const Ray& ray, const Scene& scene, float min_time, float max_time, int bounces) -> Math::vec3;
 };
 
 
 template<typename T>
 auto Scene::create_object (auto&& ... args) {
-    objects.emplace_back(
-        std::make_unique<T>(
-            std::forward<decltype(args)>(args)...));
-    return objects.back().get();
+    auto ptr = std::make_unique<T>(std::forward<decltype(args)>(args)...);
+    T* underlying = ptr.get();
+    objects.emplace_back(std::move(ptr));
+    return underlying;
 }
 
 template<typename T>
 auto Scene::create_light (auto&& ... args) {
-    incident_lights.emplace_back(
-        std::make_unique<T>(
-            std::forward<decltype(args)>(args)...));
-    return incident_lights.back().get();
+    auto ptr = std::make_unique<T>(std::forward<decltype(args)>(args)...);
+    T* underlying = ptr.get();
+
+    incident_lights.emplace_back(std::move(ptr));
+    return underlying;
 }
 
 #endif //UNTITLED26_SCENE_H

@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/19/2022.
-//
-
 #include <scene/Scene.h>
 
 
@@ -55,6 +51,74 @@ auto Scene::compute_direct_illumination (const Math::vec3& P, const Math::vec3& 
     }
     return intensity;
 }
+
+
+struct Coefficients {
+    float kr, kt, eta;
+};
+
+Math::vec3 refraction (const Math::vec3& I, const Math::vec3& N, float eta) {
+    const auto cos_theta = Math::abs(Math::clamp(Math::dot(I, N), -1.f, 1.f));
+    const auto k = 1.f - eta * eta * (1.f - cos_theta * cos_theta);
+    return k < 0.f ? Math::vec3(0.f) : eta * I + (eta * cos_theta - sqrtf(k)) * N;
+}
+
+float schlick (float ior, float cos_theta) {
+    const auto r0_sqrt = (1.f - ior) / (1.f + ior);
+    const auto r0 = r0_sqrt * r0_sqrt;
+    const auto r_theta = r0 + (1.f - r0) * std::pow(1.f - cos_theta, 5.f);
+    return r_theta;
+}
+
+Coefficients fresnel (Math::vec3 I, Math::vec3 N, const Material& material) {
+    if (material.index_of_refraction == 0.f) {
+        return { material.reflection, 0.f, 1.f };
+    }
+    const auto cos_theta = Math::clamp(Math::dot(I, N), -1.f, 1.f);
+    const auto eta = cos_theta > 0 ? material.index_of_refraction : 1.f / material.index_of_refraction;
+    const auto has_total_internal_reflection = eta * Math::sqrt(1 - cos_theta * cos_theta) >= 1.f;
+    if (has_total_internal_reflection) {
+        return { material.transmittance, 0.f, 1.f };
+    }
+    const auto reflection_probability = schlick(material.index_of_refraction, Math::abs(cos_theta));
+    return { material.transmittance * reflection_probability,
+             material.transmittance * (1.0f - reflection_probability),
+             eta };
+}
+
+
+auto Scene::trace (const Ray& ray, const Scene& scene, float min_time, float max_time, int bounces) -> Math::vec3 {
+    const Intersection ray_hit = scene.find_closest_intersection(ray, min_time, max_time);
+
+    if (!ray_hit.object || bounces == 0) {
+        return scene.background_color;
+    }
+
+    const auto& material = ray_hit.object->material;
+    const auto& normal = ray_hit.out_normal;
+
+    const auto hit_point = ray.at(ray_hit.time);
+    const auto direct = scene.compute_direct_illumination(hit_point, normal, -ray.direction, material);
+
+    const auto coefficients = fresnel(ray.direction, normal, material);
+
+    auto final_color = (1.f - coefficients.kr - coefficients.kt) * material.color * direct;
+    if (coefficients.kt > 0) {
+        const auto refracted = refraction(ray.direction, normal, coefficients.eta);
+        const auto refracted_ray = Ray{ hit_point, refracted };
+        const auto refracted_color = Scene::trace(refracted_ray, scene, 0.01f, max_time, bounces - 1);
+        final_color += coefficients.kt * refracted_color;
+    }
+    if (coefficients.kr > 0) {
+        const auto reflected = Math::reflect(ray.direction, normal);
+        const auto reflected_ray = Ray{ hit_point, reflected };
+        const auto reflected_color = Scene::trace(reflected_ray, scene, 0.01f, max_time, bounces - 1);
+        final_color += coefficients.kr * reflected_color;
+    }
+
+    return material.emission + final_color;
+}
+
 
 
 

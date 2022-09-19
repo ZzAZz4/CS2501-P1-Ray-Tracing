@@ -1,7 +1,5 @@
-//
-// Created by Esteban on 9/13/2022.
-//
 #include <object/Cylinder.h>
+
 
 Intersection Cylinder::intersection (const Ray& ray, float min_time, float) const {
     Math::vec3 ro = ray.origin;
@@ -26,12 +24,12 @@ Intersection Cylinder::intersection (const Ray& ray, float min_time, float) cons
 
     float y = caoc + t * card;
     if (y > 0.0 && y < caca && t > min_time) {
-        return {t, Math::normalize((oc + t*rd - ca * y / caca) * Math::sign(radius)), this};
+        return Intersection::normalized(t, (oc + t*rd - ca * y / caca) * Math::sign(radius), this);
     }
     // caps
     t = (((y < 0.f) ? 0.f : caca) - caoc) / card;
     if (t <= min_time || Math::abs(b + a * t) >= h) {
         return {};
     }
-    return {t, Math::normalize(ca * Math::sign(y * radius * caca)), this};
+    return Intersection::normalized(t, ca * Math::sign(y * radius), this);
 }

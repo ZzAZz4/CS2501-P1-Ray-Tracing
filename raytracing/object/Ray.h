@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/17/2022.
-//
-
 #ifndef UNTITLED26_RAY_H
 #define UNTITLED26_RAY_H
 
@@ -10,10 +6,6 @@
 struct Scene;
 struct Shape;
 
-struct RayHit {
-    const Shape* object;
-    float time;
-};
 
 struct Ray {
     Math::vec3 origin;
@@ -31,9 +23,6 @@ struct Ray {
     auto at (float time) const noexcept -> Math::vec3 {
         return origin + time * direction;
     }
-
-    [[nodiscard]]
-    auto trace (const Scene& scene, float min_time, float max_time, int bounces) const -> Math::vec3;
 };
 
 

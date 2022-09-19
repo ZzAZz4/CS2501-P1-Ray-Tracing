@@ -1,7 +1,3 @@
-//
-// Created by Esteban on 8/19/2022.
-//
-
 #ifndef UNTITLED26_INTEGERRANGE_H
 #define UNTITLED26_INTEGERRANGE_H
 

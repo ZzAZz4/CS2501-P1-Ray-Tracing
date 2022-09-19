@@ -1,9 +1,5 @@
-//
-// Created by Esteban on 9/12/2022.
-//
-
-#ifndef UNTITLED26_CILINDER_H
-#define UNTITLED26_CILINDER_H
+#ifndef UNTITLED26_CYLINDER_H
+#define UNTITLED26_CYLINDER_H
 
 #include <object/Shape.h>
 
@@ -20,4 +16,4 @@ struct Cylinder : public Shape {
     [[nodiscard]] Intersection intersection (const Ray& ray, float min_time, float max_time) const override;
 };
 
-#endif //UNTITLED26_CILINDER_H
+#endif //UNTITLED26_CYLINDER_H

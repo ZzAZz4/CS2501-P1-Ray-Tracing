@@ -2,8 +2,8 @@
 // Created by Esteban on 8/19/2022.
 //
 
-#ifndef UNTITLED26_RAYTRACINGAPP_H
-#define UNTITLED26_RAYTRACINGAPP_H
+#ifndef UNTITLED26_FIREFLIESAPP_H
+#define UNTITLED26_FIREFLIESAPP_H
 
 #include <scene/Camera.h>
 #include <scene/Scene.h>
@@ -12,10 +12,11 @@
 #include <execution>
 #include <olcPixelGameEngine.h>
 
+#include "Firefly.h"
 
-class RayTracingApp : public olc::PixelGameEngine {
+class FirefliesApp : public olc::PixelGameEngine {
 public:
-    RayTracingApp ();
+    FirefliesApp ();
 
 public:
     bool OnUserCreate () override;
@@ -24,6 +25,8 @@ public:
 private:
     Scene scene;
     Camera camera;
+    std::vector<Firefly*> fireflies;
+
     float ticks = 0;
 
 private:
@@ -32,4 +35,4 @@ private:
 };
 
 
-#endif //UNTITLED26_RAYTRACINGAPP_H
+#endif //UNTITLED26_FIREFLIESAPP_H
