@@ -23,9 +23,9 @@ public:
     bool OnUserUpdate (float) override;
 
 private:
-    Scene scene;
-    Camera camera;
-    std::vector<Firefly*> fireflies;
+    Camera camera{};
+    Scene scene{};
+    std::vector<Firefly*> fireflies{};
     float ticks{ 0 };
 
 private:

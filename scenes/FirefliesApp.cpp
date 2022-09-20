@@ -9,8 +9,7 @@
 #include <object/Plane.h>
 
 
-FirefliesApp::FirefliesApp ()
-    : scene{}, camera{} {
+FirefliesApp::FirefliesApp () {
     sAppName = "Ray Tracing";
     camera = Camera::pointing(
         { 0, 1, 0 },

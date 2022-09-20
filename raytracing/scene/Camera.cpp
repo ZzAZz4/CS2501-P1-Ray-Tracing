@@ -36,13 +36,24 @@ Camera Camera::pointing (const Math::vec3& st_, const Math::vec3& ed_, float v_f
     return { st_, Math::normalize(ed_ - st_), v_fov_, aspect_, dist_ };
 }
 
-void Camera::move_forward (float distance) { position -= distance * unit_basis[2]; }
-void Camera::move_right (float distance) { position -= distance * unit_basis[0]; }
-void Camera::move_up (float distance) { position -= distance * Math::vec4(0, -1, 0, 0); }
+void Camera::move_forward (float distance) {
+    const auto forward = Math::cross(Math::vec3(0, 1, 0), Math::vec3(this->unit_basis[0]));
+    position -= distance * Math::vec4(forward, 0);
+}
+
+void Camera::move_right (float distance) {
+    position -= distance * this->unit_basis[0];
+}
+
+void Camera::move_up (float distance) {
+    position -= distance * Math::vec4(0, -1, 0, 0);
+}
+
 void Camera::rotate_up (float angle) {
     unit_basis = glm::rotate(glm::mat4(1.f), -angle, glm::vec3(unit_basis[0])) * unit_basis;
     scaled_basis = unit_basis * scale;
 }
+
 void Camera::rotate_right (float angle) {
     unit_basis = glm::rotate(glm::mat4(1.f), -angle, glm::vec3(0, 1, 0)) * unit_basis;
     scaled_basis = unit_basis * scale;
