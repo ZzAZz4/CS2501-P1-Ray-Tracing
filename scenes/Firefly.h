@@ -14,9 +14,7 @@ struct Firefly : public Sphere {
     constexpr static float max_speed{ 1.f };
 
     Firefly (const glm::vec3& position, float radius, const Material& mat, float random_radius);
-
     void update (float fElapsedTime);
-
     void steer (float fElapsedTime);
 };
 

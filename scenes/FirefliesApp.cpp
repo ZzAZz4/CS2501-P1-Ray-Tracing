@@ -23,18 +23,20 @@ FirefliesApp::FirefliesApp ()
 
 
 bool FirefliesApp::OnUserCreate () {
-    scene.background_color = { 0.2f, 0.1f, 0.2f };
+    scene.background_color = { 0.0125f, 0.000625f, 0.0125f };
 
-    const auto mid_light = scene.create_light<PointLight>(Math::vec3(0.f, 0.25f, -2.f), Math::vec3(3.f, 3.f, 2.f));
+    scene.create_light<DirectionalLight>(Math::vec3(0.f, 1.5f, -2.f), 0.5f * Math::vec3(0.125f, 0.00625f, 0.125f));
 
     const auto mate_white = Material{ .color={ 1.f, 1.f, 1.f }};
-    const auto shiny_green = Material{ .color={ 0.f, 0.8f, 0.f }, .specular=glm::vec3{ 0.5 }, .specular_exp=500, .reflection=0.2 };
-    const auto shiny_wood = Material{ .color={ 0.45f, 0.2f, 0.02f }, .specular=glm::vec3{ 0.4f }, .reflection=0.02f };
+    const auto shiny_green = Material{ .color={ 0.1f, 0.8f, 0.1f }, .specular=glm::vec3{ 1.0 }, .specular_exp=500, .reflection=0.1 };
+    const auto shiny_wood = Material{ .color={ 0.45f, 0.2f, 0.02f }, .specular=glm::vec3{ 0.001f }, .specular_exp=20, .reflection=0.02f };
     const auto yellow_luminal = Material{ .emission={ 0.9f, 1.f, 0.6f }};
-    const auto glass = Material{ .color={ 0.f, 0.f, 0.f }, .index_of_refraction=1.5f, .transmittance=0.9f };
+    const auto glass = Material{ .color={ 1.f, 1.f, 1.f }, .index_of_refraction=1.5f, .transmittance=0.98f };
 
-    scene.create_object<Cylinder>(Math::vec3{ 0, 0, -2 }, Math::vec3{ 0, 0.5, -2 }, -0.5, mate_white)
-         ->light = mid_light;
+    const auto lantern_light = scene.create_light<PointLight>(Math::vec3(0, 0.25, -2), Math::vec3(2.5, 2, 0.9));
+    auto lantern = scene.create_object<Cylinder>(Math::vec3{ 0, 0, -2 }, Math::vec3{ 0, 0.5, -2 }, -0.5, mate_white);
+    lantern->light = lantern_light;
+
     scene.create_object<Cylinder>(Math::vec3{ 0.f, 0.f, -4.f }, Math::vec3{ 0.f, 2.f, -4.f }, 1.f, glass);
     scene.create_object<Cylinder>(Math::vec3{ 0.f, 0.05f, -4.f }, Math::vec3{ 0.f, 1.95f, -4.f }, -0.95f, glass);
     scene.create_object<Sphere>(Math::vec3{ -2.f, 0.7f, -2.f }, 0.72f, shiny_green);

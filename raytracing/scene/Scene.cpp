@@ -1,5 +1,9 @@
 #include <scene/Scene.h>
 
+struct Coefficients {
+    float kr, kt, eta;
+};
+
 
 Intersection Scene::find_closest_intersection (const Ray& ray, float min_time, float max_time) const {
     Intersection closest_hit;
@@ -12,7 +16,8 @@ Intersection Scene::find_closest_intersection (const Ray& ray, float min_time, f
     return closest_hit;
 }
 
-auto Scene::occlusion (const Ray& ray, float min_time, float max_time, const IncidentLight& light) const -> bool {
+
+bool Scene::occlusion (const Ray& ray, float min_time, float max_time, const IncidentLight& light) const {
     for (const auto& object: this->objects) {
         if (object->light == &light) {
             continue;
@@ -25,37 +30,30 @@ auto Scene::occlusion (const Ray& ray, float min_time, float max_time, const Inc
     return false;
 }
 
-auto Scene::compute_direct_illumination (const Math::vec3& P, const Math::vec3& N, const Math::vec3& v, const Material& mat) const -> Math::vec3 {
+Math::vec3 Scene::direct_color (const Math::vec3& P, const Math::vec3& N, const Math::vec3& v, const Material& m) const {
     auto intensity = this->ambient_light.intensity_value;
 
     for (const auto& light: this->incident_lights) {
         const auto light_ray = light->incidence(P);
-
         const auto shadow_hit = this->occlusion(Ray{ P, light_ray.vector }, 0.0001f, light_ray.distance, *light);
         if (shadow_hit) {
             continue;
         }
-
         const auto N_dot_L = Math::dot(N, light_ray.vector);
         if (N_dot_L > 0) {
-            intensity += light->intensity_value * mat.diffuse * N_dot_L;
+            intensity += light->intensity_value * m.diffuse * N_dot_L;
         }
-        if (mat.specular_exp <= 0) {
-            continue;
+        if (m.specular_exp > 0) {
+            const auto R = 2.f * N * N_dot_L - light_ray.vector;
+            const auto R_dot_V = Math::dot(R, v);
+            if (R_dot_V > 0) {
+                intensity += light->intensity_value * m.specular * Math::pow(R_dot_V, m.specular_exp);
+            }
         }
-        const auto R = 2.f * N * N_dot_L - light_ray.vector;
-        const auto R_dot_V = Math::dot(R, v);
-        if (R_dot_V > 0) {
-            intensity += light->intensity_value * mat.specular * Math::pow(R_dot_V, mat.specular_exp);
-        }
+
     }
     return intensity;
 }
-
-
-struct Coefficients {
-    float kr, kt, eta;
-};
 
 Math::vec3 refraction (const Math::vec3& I, const Math::vec3& N, float eta) {
     const auto cos_theta = Math::abs(Math::clamp(Math::dot(I, N), -1.f, 1.f));
@@ -87,7 +85,7 @@ Coefficients fresnel (Math::vec3 I, Math::vec3 N, const Material& material) {
 }
 
 
-auto Scene::trace (const Ray& ray, const Scene& scene, float min_time, float max_time, int bounces) -> Math::vec3 {
+Math::vec3 Scene::trace (const Ray& ray, const Scene& scene, float min_time, float max_time, int bounces) {
     const Intersection ray_hit = scene.find_closest_intersection(ray, min_time, max_time);
 
     if (!ray_hit.object || bounces == 0) {
@@ -98,7 +96,7 @@ auto Scene::trace (const Ray& ray, const Scene& scene, float min_time, float max
     const auto& normal = ray_hit.out_normal;
 
     const auto hit_point = ray.at(ray_hit.time);
-    const auto direct = scene.compute_direct_illumination(hit_point, normal, -ray.direction, material);
+    const auto direct = scene.direct_color(hit_point, normal, -ray.direction, material);
 
     const auto coefficients = fresnel(ray.direction, normal, material);
 

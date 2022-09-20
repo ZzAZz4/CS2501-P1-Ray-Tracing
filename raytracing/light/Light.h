@@ -19,7 +19,7 @@ struct IncidentLight : public Light {
     IncidentLight(const Math::vec3& intensity_value) : Light(intensity_value) {}
     virtual ~IncidentLight () = default;
 
-    [[nodiscard]] virtual auto incidence(const Math::vec3& destination) const -> Incidence = 0;
+    [[nodiscard]] virtual Incidence incidence(const Math::vec3& destination) const = 0;
 };
 
 

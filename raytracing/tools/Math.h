@@ -8,15 +8,15 @@ namespace Math {
     using namespace glm;
     static constexpr auto infinity = std::numeric_limits<float>::infinity();
 
-    template <class T>
-    static constexpr auto cap_length (T vector, float length) -> T {
+    template<class T>
+    static constexpr T cap_length (T vector, float length) {
         if (Math::length(vector) > length) {
             vector = normalize(vector) * length;
         }
         return vector;
     }
 
-    static float randf(float min, float max) {
+    static float randf (float min, float max) {
         return min + (max - min) * static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
 
@@ -24,6 +24,7 @@ namespace Math {
 };
 
 #include <iostream>
+
 std::ostream& operator << (std::ostream& os, const glm::vec3& v);
 std::ostream& operator << (std::ostream& os, const glm::vec4& v);
 std::ostream& operator << (std::ostream& os, const glm::mat3x3& m);

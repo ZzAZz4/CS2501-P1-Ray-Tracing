@@ -21,16 +21,17 @@ void Firefly::steer (float fElapsedTime) {
     const auto desired_velocity = destination - position;
     const auto distance = Math::length(desired_velocity);
 
-    auto steering = Math::cap_length(Math::normalize(desired_velocity) * max_speed - velocity, max_acceleration);
+    const auto steering = Math::cap_length(Math::normalize(desired_velocity) * max_speed - velocity, max_acceleration);
     velocity = Math::cap_length(velocity + steering * fElapsedTime, max_speed);
     position += velocity * fElapsedTime;
 
-    if (distance < max_speed * fElapsedTime) {
-        destination = initial_position + random_in_radius(random_radius);
-    }
     if (distance >= random_radius) {
         position = destination;
         velocity = -velocity;
         destination = initial_position + random_in_radius(random_radius);
     }
+    else if (distance < max_speed * fElapsedTime) {
+        destination = initial_position + random_in_radius(random_radius);
+    }
+
 }

@@ -4,7 +4,7 @@
     : IncidentLight(intensity_value), direction(Math::normalize(direction)) {}
 
 
-auto DirectionalLight::incidence (const Math::vec3&) const -> Incidence {
+Incidence DirectionalLight::incidence (const Math::vec3&) const {
     return { this->direction, Math::infinity };
 }
 

@@ -6,22 +6,23 @@
 #include <scene/Scene.h>
 #include <object/Ray.h>
 
-auto Camera::pixel_color (const Scene& scene, float x, float y, int bounces, int samples [[maybe_unused]]) const -> Math::vec3 {
+Math::vec3 Camera::pixel_color (const Scene& scene, float x, float y, int bounces) const {
     const glm::vec3 viewport_point = this->position + this->scaled_basis * Math::vec4(x - 0.5, y - 0.5, -1.0, 1.0);
     const auto ray = Ray::between(this->position, viewport_point);
-    const auto color = Scene::trace(ray, scene, 1.0f, Math::infinity, bounces);
-    const auto gc_color = Math::sqrt(color);
-    return Math::clamp(gc_color, 0.f, 1.f);
+    const auto ray_color = Scene::trace(ray, scene, 1.0f, Math::infinity, bounces);
+    const auto gc_color = Math::sqrt(ray_color);
+    auto result_color = Math::clamp(gc_color, 0.f, 1.f);
+    return result_color;
 }
 
-auto calculate_basis (const Math::vec3& pos, const Math::vec3& dir, const Math::vec3& up) -> Math::mat4 {
+Math::mat4 calculate_basis (const Math::vec3& pos, const Math::vec3& dir, const Math::vec3& up) {
     return glm::lookAt(pos, dir, up);
 }
 
-auto calculate_scale(float dist, float v_fov, float ratio) -> Math::mat4 {
+Math::mat4 calculate_scale (float dist, float v_fov, float ratio) {
     const auto height = 2 * dist * Math::tan(v_fov / 2.f);
     const auto width = height * ratio;
-    return Math::scale(Math::mat4(1.f), Math::vec3{width, height, dist});
+    return Math::scale(Math::mat4(1.f), Math::vec3{ width, height, dist });
 }
 
 Camera::Camera (const Math::vec3& pos_, const Math::vec3& dir_, float v_fov_, float aspect_, float dist_)
@@ -33,4 +34,16 @@ Camera::Camera (const Math::vec3& pos_, const Math::vec3& dir_, float v_fov_, fl
 
 Camera Camera::pointing (const Math::vec3& st_, const Math::vec3& ed_, float v_fov_, float aspect_, float dist_) {
     return { st_, Math::normalize(ed_ - st_), v_fov_, aspect_, dist_ };
+}
+
+void Camera::move_forward (float distance) { position -= distance * unit_basis[2]; }
+void Camera::move_right (float distance) { position -= distance * unit_basis[0]; }
+void Camera::move_up (float distance) { position -= distance * Math::vec4(0, -1, 0, 0); }
+void Camera::rotate_up (float angle) {
+    unit_basis = glm::rotate(glm::mat4(1.f), -angle, glm::vec3(unit_basis[0])) * unit_basis;
+    scaled_basis = unit_basis * scale;
+}
+void Camera::rotate_right (float angle) {
+    unit_basis = glm::rotate(glm::mat4(1.f), -angle, glm::vec3(0, 1, 0)) * unit_basis;
+    scaled_basis = unit_basis * scale;
 }

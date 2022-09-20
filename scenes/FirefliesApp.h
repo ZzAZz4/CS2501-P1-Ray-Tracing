@@ -26,12 +26,11 @@ private:
     Scene scene;
     Camera camera;
     std::vector<Firefly*> fireflies;
-
-    float ticks = 0;
+    float ticks{ 0 };
 
 private:
     void render_scene ();
-    void update(float fElapsedTime);
+    void update (float fElapsedTime);
 };
 
 

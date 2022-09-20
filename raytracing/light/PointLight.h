@@ -11,7 +11,7 @@ struct PointLight : IncidentLight {
     Math::vec3 position;
 
     PointLight (const Math::vec3& position, const Math::vec3& intensity_value);
-    [[nodiscard]] auto incidence(const Math::vec3& destination) const -> Incidence override;
+    [[nodiscard]] Incidence incidence(const Math::vec3& destination) const override;
 };
 
 #endif //UNTITLED26_POINTLIGHT_H

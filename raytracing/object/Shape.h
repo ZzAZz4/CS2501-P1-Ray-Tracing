@@ -10,10 +10,10 @@ struct Light;
 
 struct Shape {
     Material material;
-    const Light* light;
+    Light* light;
 
     constexpr explicit Shape(const Material& material_) : material(material_), light(nullptr) {}
-    constexpr Shape(const Material& material_, const Light* light) : material(material_), light(light) {}
+    constexpr Shape(const Material& material_, Light* light) : material(material_), light(light) {}
     virtual ~Shape() = default;
 
     [[nodiscard]] virtual Intersection intersection (const Ray& ray, float min_time, float max_time) const = 0;

@@ -16,11 +16,11 @@ struct Ray {
         : origin(origin), direction(Math::normalize(direction)) {
     }
 
-    static auto between (const Math::vec3& a, const Math::vec3& b) -> Ray {
+    static Ray between (const Math::vec3& a, const Math::vec3& b) {
         return { a, b - a };
     }
 
-    auto at (float time) const noexcept -> Math::vec3 {
+    Math::vec3 at (float time) const noexcept {
         return origin + time * direction;
     }
 };

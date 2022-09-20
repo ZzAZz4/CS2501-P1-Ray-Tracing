@@ -23,27 +23,27 @@ struct Scene {
     Math::vec3 background_color;
 
     [[nodiscard]]
-    auto compute_direct_illumination (const Math::vec3& P, const Math::vec3& N, const Math::vec3& v, const Material& mat) const -> Math::vec3;
+    Math::vec3 direct_color (const Math::vec3& P, const Math::vec3& N, const Math::vec3& v, const Material& m) const;
 
     [[nodiscard]]
     Intersection find_closest_intersection (const Ray& ray, float min_time, float max_time) const;
 
     [[nodiscard]]
-    auto occlusion (const Ray& ray, float min_time, float max_time, const IncidentLight& light) const -> bool;
+    bool occlusion (const Ray& ray, float min_time, float max_time, const IncidentLight& light) const;
 
     template<typename T>
-    auto create_object (auto&& ... args);
+    T* create_object (auto&& ... args);
 
     template<typename T>
-    auto create_light (auto&& ... args);
+    T* create_light (auto&& ... args);
 
     [[nodiscard]]
-    static auto trace (const Ray& ray, const Scene& scene, float min_time, float max_time, int bounces) -> Math::vec3;
+    static Math::vec3 trace (const Ray& ray, const Scene& scene, float min_time, float max_time, int bounces);
 };
 
 
 template<typename T>
-auto Scene::create_object (auto&& ... args) {
+T* Scene::create_object (auto&& ... args) {
     auto ptr = std::make_unique<T>(std::forward<decltype(args)>(args)...);
     T* underlying = ptr.get();
     objects.emplace_back(std::move(ptr));
@@ -51,7 +51,7 @@ auto Scene::create_object (auto&& ... args) {
 }
 
 template<typename T>
-auto Scene::create_light (auto&& ... args) {
+T* Scene::create_light (auto&& ... args) {
     auto ptr = std::make_unique<T>(std::forward<decltype(args)>(args)...);
     T* underlying = ptr.get();
 

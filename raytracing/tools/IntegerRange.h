@@ -16,72 +16,73 @@ public:
     int step{};
 
 public:
-    constexpr IntegerIterator() = default;
-    constexpr IntegerIterator(int value, int step) : value(value), step(step) {}
-    constexpr auto operator++() -> IntegerIterator& {
+    constexpr IntegerIterator () = default;
+    constexpr IntegerIterator (int value, int step) : value(value), step(step) {}
+    constexpr IntegerIterator& operator ++ () {
         value += step;
         return *this;
     }
-    constexpr auto operator++(int) -> IntegerIterator {
+    constexpr IntegerIterator operator ++ (int)  {
         IntegerIterator result(*this);
         ++(*this);
         return result;
     }
-    constexpr auto operator--() -> IntegerIterator& {
+    constexpr IntegerIterator& operator -- () {
         value -= step;
         return *this;
     }
-    constexpr auto operator--(int) -> IntegerIterator {
+    constexpr IntegerIterator operator -- (int) {
         IntegerIterator result(*this);
         --(*this);
         return result;
     }
-    constexpr auto operator+(int n) const -> IntegerIterator {
+    constexpr IntegerIterator operator + (int n) const {
         return IntegerIterator(value + n * step, step);
     }
-    constexpr auto operator-(int n) const -> IntegerIterator {
+    constexpr IntegerIterator operator - (int n) const {
         return IntegerIterator(value - n * step, step);
     }
-    constexpr auto operator[](int n) const -> int {
+    constexpr int operator [] (int n) const {
         return value + n * step;
     }
-    constexpr auto operator==(const IntegerIterator& other) const -> bool {
+    constexpr bool operator == (const IntegerIterator& other) const  {
         return value == other.value;
     }
-    constexpr auto operator!=(const IntegerIterator& other) const -> bool {
+    constexpr bool operator != (const IntegerIterator& other) const {
         return !(*this == other);
     }
-    constexpr auto operator<(const IntegerIterator& other) const -> bool {
+    constexpr bool operator < (const IntegerIterator& other) const {
         return value < other.value;
     }
-    constexpr auto operator>(const IntegerIterator& other) const -> bool {
+    constexpr bool operator > (const IntegerIterator& other) const {
         return value > other.value;
     }
-    constexpr auto operator<=(const IntegerIterator& other) const -> bool {
+    constexpr bool operator <= (const IntegerIterator& other) const {
         return value <= other.value;
     }
-    constexpr auto operator>=(const IntegerIterator& other) const -> bool {
+    constexpr bool operator >= (const IntegerIterator& other) const {
         return value >= other.value;
     }
-    constexpr auto operator-(const IntegerIterator& other) const -> int {
+    constexpr int operator - (const IntegerIterator& other) const {
         return (value - other.value) / step;
     }
-    constexpr auto operator+=(int n) -> IntegerIterator& {
+    constexpr IntegerIterator& operator += (int n) {
         value += n * step;
         return *this;
     }
-    constexpr auto operator-=(int n) -> IntegerIterator& {
+    constexpr IntegerIterator& operator -= (int n) {
         value -= n * step;
         return *this;
     }
-    constexpr auto operator*() const -> int {
+    constexpr int operator * () const {
         return value;
     }
-    constexpr auto operator->() const -> int {
+    constexpr int operator -> () const {
         return value;
     }
 };
-constexpr auto operator+(int n, const IntegerIterator& it) -> IntegerIterator {
+
+constexpr IntegerIterator operator + (int n, const IntegerIterator& it) {
     return it + n;
 }
 
@@ -94,20 +95,20 @@ private:
     int step = 1;
 
 public:
-    constexpr IntegerRange(int start, int last) : start(start), last(last) {}
-    [[nodiscard]] constexpr auto begin() const -> IntegerIterator {
-        return {start, step};
+    constexpr IntegerRange (int start, int last) : start(start), last(last) {}
+    [[nodiscard]] constexpr IntegerIterator begin () const {
+        return { start, step };
     }
-    [[nodiscard]] constexpr auto end() const -> IntegerIterator {
-        return {last, step};
+    [[nodiscard]] constexpr IntegerIterator end () const {
+        return { last, step };
     }
-    [[nodiscard]] constexpr auto cbegin() const -> IntegerIterator {
+    [[nodiscard]] constexpr IntegerIterator cbegin () const {
         return begin();
     }
-    [[nodiscard]] constexpr auto cend() const -> IntegerIterator {
+    [[nodiscard]] constexpr IntegerIterator cend () const {
         return end();
     }
-    [[nodiscard]] constexpr auto size() const -> int {
+    [[nodiscard]] constexpr std::size_t size () const {
         return (last - start) / step + 1;
     }
 };
